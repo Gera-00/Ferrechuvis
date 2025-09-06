@@ -1,0 +1,100 @@
+package org.upemor.ferrechuvis.view.auth;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import org.upemor.ferrechuvis.view.components.Pantalla;
+
+public class Login extends Pantalla{
+
+    private JPanel panelGris;
+    private JLabel lblTitulo, lblUsuario, lblPassword;
+    private JTextField txtUsuario;
+    private JPasswordField txtPasswordField;
+    private JButton btnIngresar;
+
+    public Login(){
+        super("Inicio de Sesión - Ferrechuvis", 600, 500);
+    }
+
+    @Override
+    protected LayoutManager tipoPanel(){
+        return new GridBagLayout();
+    }
+
+    protected void initSpecificComponents(){
+        //Configuracion Panel Principal
+        panelPrincipal.setBackground(Color.DARK_GRAY);
+
+        //Configuacion PanelGris
+        panelGris = new JPanel(new GridBagLayout());
+            panelGris.setBackground(new Color(0x232322));
+            panelGris.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+            panelGris.setPreferredSize(new Dimension(350, 400));
+        
+        //Configuracion de Componentes
+        lblTitulo = new JLabel("Ferrechuvis", SwingConstants.CENTER);
+            lblTitulo.setForeground(Color.WHITE);
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+
+        lblUsuario = new JLabel("Usuario");
+            lblUsuario.setForeground(Color.WHITE);
+        txtUsuario = new JTextField(15);
+
+        lblPassword = new JLabel("Contraseña");
+            lblPassword.setForeground(Color.WHITE);
+        txtPasswordField = new JPasswordField(15);
+
+        //Configuración de Botón
+        btnIngresar = new JButton("Iniciar Sesión");
+            btnIngresar.setBackground(new Color(0x303337));
+            //btnIngresar.setBackground(new Color(0x353535));
+            btnIngresar.setForeground(Color.WHITE);
+            btnIngresar.setFont(new Font("Arial", Font.BOLD, 12));
+            btnIngresar.setFocusPainted(false);
+            btnIngresar.setBorderPainted(false);
+            btnIngresar.setContentAreaFilled(true);
+
+        //Título con espacio superior personalizado
+        GridBagConstraints gbcTitulo = crearRestricciones(0, 0, 2, 1);
+        gbcTitulo.insets = new Insets(10, 5, 40, 5); // Más espacio inferior para separar del resto
+        panelGris.add(lblTitulo, gbcTitulo);
+        
+        panelGris.add(lblUsuario, crearRestricciones(0,1,1,1));
+        panelGris.add(txtUsuario,crearRestricciones(0, 2, 2, 1));
+        panelGris.add(lblPassword,crearRestricciones(0, 3, 1, 1));
+        panelGris.add(txtPasswordField,crearRestricciones(0, 4, 2, 1));
+        
+        //Crear restricciones personalizadas para el botón centrado
+        GridBagConstraints gbcBoton = crearRestricciones(0, 5, 2, 1);
+        gbcBoton.fill = GridBagConstraints.NONE; // No llenar toda la celda
+        gbcBoton.anchor = GridBagConstraints.CENTER; // Centrar el botón
+        panelGris.add(btnIngresar, gbcBoton);
+
+        //Configuración para centrar el Panel Gris en el Panel Principal
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(20, 20, 20, 20);
+        panelPrincipal.add(panelGris,gbc);
+    }
+    
+    protected void setupEventListeners(){
+
+    }
+    
+
+}
