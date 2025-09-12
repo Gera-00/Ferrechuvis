@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.upemor.ferrechuvis.model.entity.Usuarios;
+import org.upemor.ferrechuvis.view.auth.Login;
 import org.upemor.ferrechuvis.view.components.ImagenUtils;
 import org.upemor.ferrechuvis.view.components.Pantalla;
 import org.upemor.ferrechuvis.view.panels.inicio.PanelInicio;
@@ -216,20 +217,34 @@ public class PrincipalAdministrador extends Pantalla{
         
         btnProductos.addActionListener(e->{
             PanelProductos pp = new PanelProductos();
-            JPanel panelProductos = pp.crearPanel();
-            navegacionUsuario(2);
-            cambiarPanel(panelProductos);
+            try {
+                JPanel panelProductos = pp.crearPanel();
+                navegacionUsuario(2);
+                cambiarPanel(panelProductos);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // Optionally, show an error dialog to the user
+            }
         });
         btnPedidos.addActionListener(e->{
             navegacionUsuario(3);
         });
         btnProveedores.addActionListener(e->{
             PanelProveedores pp = new PanelProveedores();
-            JPanel panelProveedores = pp.crearPanel();
-            navegacionUsuario(4);
-            cambiarPanel(panelProveedores);
+            try {
+                JPanel panelProveedores = pp.crearPanel();
+                navegacionUsuario(4);
+                cambiarPanel(panelProveedores);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                // Optionally, show an error dialog to the user
+            }
         });
         btnEmpleados.addActionListener(e->{navegacionUsuario(5);});
+        btnCerrarSesion.addActionListener(e->{
+            dispose();
+            new Login().setVisible(true);
+        });
     }
 
     private void cambiarPanel(JPanel nuevoPanel){

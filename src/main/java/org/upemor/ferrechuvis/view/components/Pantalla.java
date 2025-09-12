@@ -52,6 +52,9 @@ public abstract class Pantalla extends JFrame{
     public void mostrar() {
         setVisible(true); // Se hace visible cuando se necesite
     }
+    public void ocultar(){
+        setVisible(false);
+    }
 
     /**
      * Este metodo sirve para crear las restricciones al agregar cualquier

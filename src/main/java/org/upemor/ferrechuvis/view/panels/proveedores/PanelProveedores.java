@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,11 +19,16 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import org.upemor.ferrechuvis.controller.ControllerProveedores;
+import org.upemor.ferrechuvis.model.entity.Proveedores;
 import org.upemor.ferrechuvis.view.components.ImagenUtils;
 
-public class PanelProveedores {
+public class PanelProveedores{
     
-    public JPanel crearPanel(){
+    private ControllerProveedores cp;
+    private List<Proveedores> data;
+
+    public JPanel crearPanel()throws Exception{
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
         
@@ -96,7 +103,7 @@ public class PanelProveedores {
         });
     }
 
-    private JPanel crearPanelProveedores(){
+    private JPanel crearPanelProveedores()throws Exception{
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 40));
@@ -110,18 +117,19 @@ public class PanelProveedores {
             }
         };
 
-        // Datos de ejemplo para mostrar la funcionalidad
-        Object[][] datosEjemplo = {
-            {1, "Ferreterías del Norte S.A.", "+52 777 123 4567", "ventas@ferrenorte.mx", "Av. Industrial 123, Cuernavaca"},
-            {2, "Distribuidora Herramientas MX", "+52 777 987 6543", "contacto@herramientasmx.com", "Calle Comercio 456, Temixco"},
-            {3, "Suministros Industriales López", "+52 777 555 0123", "info@suministroslopez.mx", "Blvd. Universidad 789, Jiutepec"},
-            {4, "Tornillería y Herrajes Express", "+52 777 111 2222", "pedidos@tornilleriaexpress.mx", "Zona Industrial Norte 321"},
-            {5, "Materiales de Construcción García", "+52 777 333 4444", "garcia@materiales.mx", "Carretera Federal 95, Km 12"}
-        };
 
-        // Agregar datos de ejemplo al modelo
-        for (Object[] fila : datosEjemplo) {
-            modeloTabla.addRow(fila);
+        cp = new ControllerProveedores();
+        data = cp.getAll();
+
+        // Agregar datos reales de la base de datos al modelo
+        for (Proveedores proveedor : data) {
+            modeloTabla.addRow(new Object[] {
+                proveedor.getId(),
+                proveedor.getNombre(),
+                proveedor.getTelefono(),
+                proveedor.getEmail(),
+                proveedor.getDireccion()
+            });
         }
 
         // Crear tabla

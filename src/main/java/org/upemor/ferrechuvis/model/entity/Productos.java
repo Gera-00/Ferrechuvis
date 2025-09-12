@@ -10,14 +10,16 @@ public class Productos extends Entity{
     private String codigo;
     private String nombre;
     private String descripcion;
-    private String categoria;
+    private long id_categoria;
     private String unidad_medida;
     private int stock;
     private double precio;
+    private int stock_minimo;
+    private String link_imagen;
 
     @Override
     public String toString(){
-        return codigo+": "+nombre+" "+categoria+" "+stock;
+        return codigo+": "+nombre+" "+id_categoria+" "+stock;
     }
 
 }

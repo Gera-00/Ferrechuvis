@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -15,38 +16,50 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.upemor.ferrechuvis.controller.ControllerProductos;
+import org.upemor.ferrechuvis.model.entity.Productos;
 import org.upemor.ferrechuvis.view.components.ImagenUtils;
 
+
 public class PanelProductos{
-    
-    public JPanel crearPanel(){
-        JPanel panel =  new JPanel(new BorderLayout());
+
+    private ControllerProductos cp;
+    private List<Productos> data;
+    private JTextField buscador;
+    private JPanel panelPrincipal;
+
+    public JPanel crearPanel()throws Exception{
+        cp = new ControllerProductos();
+        panelPrincipal = new JPanel(new BorderLayout());
 
         JPanel header = crearHeader();
-        JPanel panelProductos = crearPanelProductos();
+        JPanel panelProductos = crearPanelProductos(cp.getAll());
 
-        panel.add(header, BorderLayout.NORTH);
-        panel.add(panelProductos, BorderLayout.CENTER);
-        return panel;
+        JScrollPane scrollPane = new JScrollPane(panelProductos);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        panelPrincipal.add(header, BorderLayout.NORTH);
+        panelPrincipal.add(scrollPane, BorderLayout.CENTER);
+        return panelPrincipal;
     }
-    
 
     private JPanel crearHeader(){
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
         header.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        
-        // Panel para centrar el buscador
+
         JPanel panelBuscador = new JPanel();
         panelBuscador.setBackground(Color.WHITE);
-        
-        JTextField buscador = new JTextField(25);
+
+        buscador = new JTextField(25);
         buscador.setFont(new Font("Arial", Font.PLAIN, 16));
         buscador.setPreferredSize(new Dimension(300, 35));
-        
+
         JButton btnBuscar = new JButton();
         btnBuscar.setFocusPainted(false);
         btnBuscar.setBorderPainted(false);
@@ -54,73 +67,51 @@ public class PanelProductos{
         btnBuscar.setBackground(new Color(0xFF3F0F));
         btnBuscar.setPreferredSize(new Dimension(45, 35));
         ImagenUtils.configurarButtonConImagen(btnBuscar, "src\\main\\java\\org\\upemor\\ferrechuvis\\resources\\icons\\lupa.png", 20, 20);
-        
+
+        btnBuscar.addActionListener(e->{
+            try {
+                buscar();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         panelBuscador.add(buscador);
         panelBuscador.add(btnBuscar);
-        
+
         header.add(panelBuscador, BorderLayout.CENTER);
         return header;
     }
 
-    private JPanel crearPanelProductos(){
+    private JPanel crearPanelProductos(List<Productos> productosData){
         JPanel productos = new JPanel();
         productos.setBackground(Color.WHITE);
-        
-        // Crear GridBagLayout para control más preciso
         productos.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
-        // Lista de productos de ejemplo
-        String[] nombresProductos = {
-            "Taladro Percutor", 
-            "Destornillador Set",
-            "Martillo de Garra",
-            "Sierra Circular",
-            "Nivel de Burbuja",
-            "Alicate Universal"
-        };
-        
-        String[] preciosProductos = {
-            "$1,250.00",
-            "$450.00", 
-            "$380.00",
-            "$2,100.00",
-            "$220.00",
-            "$180.00"
-        };
-        
-        String[] stockProductos = {
-            "15",
-            "25",
-            "18",
-            "8",
-            "30",
-            "22"
-        };
-        
-        // Configurar grid 3x2 (3 columnas, 2 filas)
+
         int columnas = 3;
-        for(int i = 0; i < nombresProductos.length; i++){
-            gbc.gridx = i % columnas;  // Columna: 0, 1, 2, 0, 1, 2
-            gbc.gridy = i / columnas;  // Fila: 0, 0, 0, 1, 1, 1
+        for(int i = 0; i < productosData.size(); i++){
+            Productos obj = productosData.get(i);
+            gbc.gridx = i % columnas;
+            gbc.gridy = i / columnas;
             gbc.insets = new Insets(15, 15, 15, 15);
             gbc.fill = GridBagConstraints.BOTH;
             gbc.weightx = 1.0;
             gbc.weighty = 1.0;
-            
+
             JPanel tarjeta = crearTarjetaProductos(
-                nombresProductos[i], 
-                preciosProductos[i], 
-                stockProductos[i]
+                obj.getNombre(),
+                "$" + String.format("%.2f", obj.getPrecio()),
+                String.valueOf(obj.getStock()), obj.getLink_imagen()
             );
-            
+
             productos.add(tarjeta, gbc);
         }
-        
+
         return productos;
     }
 
-    private JPanel crearTarjetaProductos(String nombre, String precio, String stock){
+    private JPanel crearTarjetaProductos(String nombre, String precio, String stock, String rutaImg){
         JPanel tarjeta = new JPanel(new BorderLayout());
         tarjeta.setBackground(Color.WHITE);
         tarjeta.setBorder(BorderFactory.createCompoundBorder(
@@ -163,7 +154,7 @@ public class PanelProductos{
         panelImagen.setPreferredSize(new Dimension(160, 80));
         
         JLabel lblImagen = new JLabel();
-        ImagenUtils.configurarLabelConImagen(lblImagen, "src\\main\\java\\org\\upemor\\ferrechuvis\\resources\\icons\\stock.png", 60, 60);
+        ImagenUtils.configurarLabelConImagen(lblImagen, rutaImg, 60, 60);
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
         panelImagen.add(lblImagen);
 
@@ -202,6 +193,30 @@ public class PanelProductos{
         tarjeta.add(panelInfo, BorderLayout.CENTER);
         
         return tarjeta;
+    }
+
+
+    public void buscar()throws Exception{
+        String texto = buscador.getText().trim();
+        List<Productos> resultados;
+        try {
+            if (texto.isEmpty()) {
+                resultados = cp.getAll();
+            } else {
+                resultados = cp.getByName(texto);
+            }
+            JPanel panelProductos = crearPanelProductos(resultados);
+            JScrollPane scrollPane = new JScrollPane(panelProductos);
+            scrollPane.setBorder(null);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+            panelPrincipal.remove(1); // Elimina el panel anterior (índice 1)
+            panelPrincipal.add(scrollPane, BorderLayout.CENTER);
+            panelPrincipal.revalidate();
+            panelPrincipal.repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     protected GridBagConstraints crearRestricciones(int x, int y, int width, int height) {

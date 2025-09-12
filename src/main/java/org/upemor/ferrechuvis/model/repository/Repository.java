@@ -43,7 +43,7 @@ public abstract class Repository <T extends Entity> {
             for (int i=1;i<=parameters-1;i++)queryCreate +=",?";
         queryCreate += ")";
         queryRead = "SELECT * FROM "+table+" WHERE id IN (?)";
-        queryReadByName = "SELECT * FROM "+table+" WHERE nombre = (?)";
+    queryReadByName = "SELECT * FROM " + table + " WHERE nombre LIKE ?";
         queryReadAll = "SELECT * FROM "+table+"";
         queryUpdate = "REPLACE INTO "+table+" VALUES(";
             for (int i=1;i<=parameters;i++)queryUpdate +=",?";
@@ -84,20 +84,21 @@ public abstract class Repository <T extends Entity> {
         }
     }
     
-    public T readByName(String nombre)throws Exception{
+    public List<T> readByName(String nombre) throws Exception {
         try {
             statment = myConnection.conectar().prepareStatement(queryReadByName);
-                statment.setString(1, nombre);
+            statment.setString(1, "%" + nombre + "%"); // Usar LIKE para coincidencias parciales
             ResultSet rs = statment.executeQuery();
-            T obj = null;
-            while(rs.next()){
-                obj = mappingObject(rs);
+            List<T> list = new LinkedList<>();
+            while (rs.next()) {
+                T obj = mappingObject(rs);
+                list.add(obj);
             }
-            return obj;
+            return list;
         } catch (Exception e) {
-            System.out.println("Error: "+e.getMessage()
-            +" in class"+this.getClass().getName()
-            +" in method: readByName");
+            System.out.println("Error: " + e.getMessage()
+                    + " in class" + this.getClass().getName()
+                    + " in method: readByName");
             throw e;
         }
     }

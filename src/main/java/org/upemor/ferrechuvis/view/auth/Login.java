@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.security.Principal;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,7 +17,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.upemor.ferrechuvis.controller.ControllerUsuarios;
+import org.upemor.ferrechuvis.model.entity.Usuarios;
 import org.upemor.ferrechuvis.view.components.Pantalla;
+import org.upemor.ferrechuvis.view.usuarios.PrincipalAdministrador;
 
 public class Login extends Pantalla{
 
@@ -93,7 +97,29 @@ public class Login extends Pantalla{
     }
     
     protected void setupEventListeners(){
+        btnIngresar.addActionListener(e->{
+            String usuario = txtUsuario.getText();
+            String password = new String(txtPasswordField.getPassword());
+            try {
+                validacion(usuario, password);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(null, "Ocurrió un error al intentar iniciar sesión.");
+            }
+        });
+    }
 
+
+    public void validacion(String usuario, String password) throws Exception {
+        ControllerUsuarios cu = new ControllerUsuarios();
+        Usuarios user = cu.login(usuario, password);
+        if (user != null) {
+            // Abrir pantalla principal (ajusta el nombre de la clase según tu proyecto)
+            ocultar();
+            new PrincipalAdministrador(user).setVisible(true);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
+        }
     }
     
 

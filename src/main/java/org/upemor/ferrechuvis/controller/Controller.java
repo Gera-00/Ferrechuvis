@@ -54,7 +54,7 @@ public abstract class Controller<R extends Repository<E>,E extends Entity> {
         }
     } 
     
-    public E getByName(String name) throws Exception {
+    public List<E> getByName(String name) throws Exception {
         try {
                 return repository.readByName(name);
             }catch (Exception e) {

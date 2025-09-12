@@ -11,19 +11,18 @@ public class ControllerUsuarios extends Controller<RepositoryUsuarios, Usuarios>
     }
 
     protected boolean validate(Usuarios obj)throws Exception{
-        
         if(obj.getId()<0)
             throw new Exception("Error: El ID no puede ser negativo");
 
         if(obj.getNombre()==null || obj.getNombre().isEmpty())
             throw new Exception("Error: El Nombre no puede estar vacío");
-        
+
         if(obj.getA_paterno()==null || obj.getA_paterno().isEmpty())
             throw new Exception("Error: El Apellido Paterno no puede estar vacío");
-        
+
         if(obj.getUsuario()==null || obj.getUsuario().isEmpty())
             throw new Exception("Error: El Usuario no puede estar vacío");
-        
+
         if(obj.getPassword()==null || obj.getPassword().isEmpty())
             throw new Exception("Error: La contraseña no puede estar vacia");
 
@@ -36,5 +35,8 @@ public class ControllerUsuarios extends Controller<RepositoryUsuarios, Usuarios>
 
         return true;
     }
-    
+
+    public Usuarios login(String usuario, String password) throws Exception {
+        return repository.login(usuario, password);
+    }
 }

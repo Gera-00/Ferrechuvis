@@ -8,7 +8,7 @@ import org.upemor.ferrechuvis.model.entity.Productos;
 public class RepositoryProductos extends Repository<Productos>{
     
     public RepositoryProductos()throws Exception{
-        super("Productos", 8);
+        super("Productos", 10);
     }
 
     protected Productos mappingObject(ResultSet rs) throws Exception{
@@ -17,10 +17,12 @@ public class RepositoryProductos extends Repository<Productos>{
          producto.setCodigo(rs.getString(2));
          producto.setNombre(rs.getString(3));
          producto.setDescripcion(rs.getString(4));
-         producto.setCategoria(rs.getString(5));
+         producto.setId_categoria(rs.getLong(5));
          producto.setUnidad_medida(rs.getString(6));
          producto.setStock(rs.getInt(7));
          producto.setPrecio(rs.getDouble(8));
+         producto.setStock_minimo(rs.getInt(9));
+         producto.setLink_imagen(rs.getString(10));
         return producto;
     }
 
@@ -30,9 +32,11 @@ public class RepositoryProductos extends Repository<Productos>{
         statement.setString(i++, obj.getCodigo());
         statement.setString(i++, obj.getNombre());
         statement.setString(i++, obj.getDescripcion());
-        statement.setString(i++, obj.getCategoria());
+        statement.setLong(i++, obj.getId_categoria());
         statement.setString(i++, obj.getUnidad_medida());
         statement.setInt(i++, obj.getStock());
         statement.setDouble(i++, obj.getPrecio());
+        statement.setInt(i++, obj.getStock_minimo());
+        statement.setString(i++, obj.getLink_imagen());
     }
 }

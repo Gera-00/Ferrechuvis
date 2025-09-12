@@ -74,13 +74,21 @@ public class PanelInicio {
 
     private JPanel crearEstadisticas(){
         JPanel panel = new JPanel(new GridLayout(2,2,20,20));
-            panel.setBackground(Color.WHITE);
-            panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        
-            String stock = "0";
-            String bajoInventario = "0";
-            String ventas = "0";
-            String pedidos = "0";
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        // Obtener datos reales desde el controlador
+        String stock = "0";
+        String bajoInventario = "0";
+        try {
+            stock = String.valueOf(controllerProductos.countAll());
+            bajoInventario = String.valueOf(controllerProductos.countProductosStockBajo());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String ventas = "0";    // Puedes implementar la lógica después
+        String pedidos = "0";   // Puedes implementar la lógica después
 
         JPanel panelStock = crearTarjetaEstadistica("stock.png", stock, "Productos en Stock");
         JPanel panelBajoInventario = crearTarjetaEstadistica("alerta.png", bajoInventario, "Productos bajos en Inventario");

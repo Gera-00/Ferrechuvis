@@ -35,5 +35,16 @@ public class RepositoryUsuarios extends Repository<Usuarios>{
     }
 
 
-    
+    public Usuarios login(String usuario, String password) throws Exception {
+        String sql = "SELECT * FROM Usuarios WHERE usuario = ? AND password = ?";
+        try (PreparedStatement statement = myConnection.conectar().prepareStatement(sql)) {
+            statement.setString(1, usuario);
+            statement.setString(2, password);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return mappingObject(rs);
+            }
+        }
+        return null; // Si no se encuentra, retorna null
+    }
 }
