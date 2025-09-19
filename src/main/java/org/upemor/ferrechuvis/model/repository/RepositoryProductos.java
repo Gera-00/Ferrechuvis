@@ -2,6 +2,8 @@ package org.upemor.ferrechuvis.model.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.upemor.ferrechuvis.model.entity.Productos;
 
@@ -38,5 +40,25 @@ public class RepositoryProductos extends Repository<Productos>{
         statement.setDouble(i++, obj.getPrecio());
         statement.setInt(i++, obj.getStock_minimo());
         statement.setString(i++, obj.getLink_imagen());
+    }
+
+    public List<Productos> readByCodigo(String codigo) throws Exception {
+        try {
+            String queryReadByCodigo = "SELECT * FROM Productos WHERE codigo LIKE ?";
+            statment = myConnection.conectar().prepareStatement(queryReadByCodigo);
+            statment.setString(1, "%" + codigo + "%"); // Usar LIKE para coincidencias parciales
+            ResultSet rs = statment.executeQuery();
+            List<Productos> list = new LinkedList<>();
+            while (rs.next()) {
+                Productos obj = mappingObject(rs);
+                list.add(obj);
+            }
+            return list;
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage()
+                    + " in class" + this.getClass().getName()
+                    + " in method: readByCodigo");
+            throw e;
+        }
     }
 }

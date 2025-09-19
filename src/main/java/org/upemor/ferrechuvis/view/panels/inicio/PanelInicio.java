@@ -26,7 +26,8 @@ public class PanelInicio {
     private Usuarios usuario;
     private ControllerProductos controllerProductos;
     private ControllerPedidos controllerPedidos;
-
+    private JLabel lblFecha; // JLabel para mostrar la hora
+    private javax.swing.Timer timer; // Timer para actualizar la hora
 
     public PanelInicio(Usuarios usuario){
         this.usuario = usuario;
@@ -36,6 +37,21 @@ public class PanelInicio {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        iniciarActualizacionHora();
+    }
+
+    private void iniciarActualizacionHora() {
+        timer = new javax.swing.Timer(1000, new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                java.time.LocalDateTime tiempoActual = java.time.LocalDateTime.now();
+                String fechaHoraActual = tiempoActual.format(java.time.format.DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy   HH:mm:ss     "));
+                if (lblFecha != null) {
+                    lblFecha.setText(fechaHoraActual);
+                }
+            }
+        });
+        timer.start();
     }
 
 
@@ -55,16 +71,15 @@ public class PanelInicio {
 
     private JPanel crearHeader(){
         JPanel header = new JPanel(new BorderLayout());
-            header.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
-            header.setBackground(Color.WHITE);
-        JLabel lblUsuario = new JLabel("Bienvenido, "+ usuario.getNombre());
-            lblUsuario.setFont(new Font("Arial", Font.BOLD, 24));
+        header.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+        header.setBackground(Color.WHITE);
+        JLabel lblUsuario = new JLabel("   Bienvenido, "+ usuario.getNombre());
+        lblUsuario.setFont(new Font("Arial", Font.BOLD, 24));
 
-        LocalDateTime tiempoActual = LocalDateTime.now();
-
-        String fechaHoraActual = tiempoActual.format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy 'a las' HH:mm"));
-        JLabel lblFecha = new JLabel(fechaHoraActual);
-            lblFecha.setFont(new Font("Arial", Font.PLAIN, 16));
+        java.time.LocalDateTime tiempoActual = java.time.LocalDateTime.now();
+        String fechaHoraActual = tiempoActual.format(java.time.format.DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy   HH:mm:ss     "));
+        lblFecha = new JLabel(fechaHoraActual);
+        lblFecha.setFont(new Font("Arial", Font.PLAIN, 16));
 
         header.add(lblUsuario, BorderLayout.WEST);
         header.add(lblFecha, BorderLayout.EAST);

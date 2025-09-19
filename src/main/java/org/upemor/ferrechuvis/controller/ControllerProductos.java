@@ -1,5 +1,6 @@
 package org.upemor.ferrechuvis.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.upemor.ferrechuvis.model.entity.Productos;
 import org.upemor.ferrechuvis.model.repository.RepositoryProductos;
@@ -43,6 +44,17 @@ public class ControllerProductos extends Controller<RepositoryProductos, Product
         return true;
     }
 
+    public List<Productos> getByCodigo(String codigo) throws Exception {
+        try {
+                return repository.readByCodigo(codigo);
+            }catch (Exception e) {
+            System.out.println("Error: "+e.getMessage()
+            +" in class"+this.getClass().getName()
+            +" in method: getByCodigo ");
+            throw e;
+        }
+    }
+
     public int countAll()throws Exception{
         //Devuelve el total de productos.
         List<Productos> productos = getAll();
@@ -52,7 +64,7 @@ public class ControllerProductos extends Controller<RepositoryProductos, Product
     public int countProductosStockBajo()throws Exception{
                 //Devuelve el total de productos con stock bajo
         List<Productos> productos = getAll();
-        List<Productos> bajoStock = null;
+        List<Productos> bajoStock = new ArrayList<>();
 
         for (Productos obj : productos) {
             if (obj.getStock() <= obj.getStock_minimo()) {

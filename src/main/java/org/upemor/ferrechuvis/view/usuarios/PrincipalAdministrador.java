@@ -37,7 +37,7 @@ public class PrincipalAdministrador extends Pantalla{
 
 
     public PrincipalAdministrador(Usuarios usuario){
-        super("Inicio - Ferrechuvis", 1200, 700);
+        super("Inicio - Ferrechuvis", 1200, 700,false);
         this.usuario = usuario;
         //Inicializamos en Panel de Inicio por defecto
             PanelInicio pi = new PanelInicio(usuario);
@@ -141,8 +141,9 @@ public class PrincipalAdministrador extends Pantalla{
             panelUsuario.add(btnPedidos, gbc);
             gbc.gridy = 3;
             panelUsuario.add(btnProveedores, gbc);
+            /*ESTO AGREGAR EN POSTERIOR VERSION */
             gbc.gridy = 4;
-            panelUsuario.add(btnEmpleados, gbc);
+            //panelUsuario.add(btnEmpleados, gbc);
 
             //Espacios para empujar los btn hacia arriba
             gbc.gridy=5;
@@ -242,8 +243,17 @@ public class PrincipalAdministrador extends Pantalla{
         });
         btnEmpleados.addActionListener(e->{navegacionUsuario(5);});
         btnCerrarSesion.addActionListener(e->{
-            dispose();
-            new Login().setVisible(true);
+            int opcion = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "¿Seguro que desea cerrar sesión?",
+                "Confirmar cierre de sesión",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+            );
+            if (opcion == javax.swing.JOptionPane.YES_OPTION) {
+                dispose();
+                new Login().setVisible(true);
+            }
         });
     }
 

@@ -20,14 +20,18 @@ public abstract class Pantalla extends JFrame{
      * @param alto
      * @param ancho
      */
-    public Pantalla(String titulo, int ancho, int alto) {
+    public Pantalla(String titulo, int ancho, int alto, boolean modal) {
         //panelPrincipal = new JPanel();
-        initBaseComponents(titulo,ancho,alto);
+        initBaseComponents(titulo,ancho,alto,modal);
         initSpecificComponents();
         setupEventListeners();
     }
+
+    public Pantalla(){
+
+    }
     
-    private void initBaseComponents(String titulo, int ancho, int alto) {
+    protected void initBaseComponents(String titulo, int ancho, int alto, boolean modal) {
         panelPrincipal =  new JPanel(tipoPanel());
         // Configuraciones comunes a todas las pantallas
         this.setContentPane(panelPrincipal);
@@ -36,6 +40,9 @@ public abstract class Pantalla extends JFrame{
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(false);
+        if (modal) {
+            this.setUndecorated(true);
+        }
     }
     
     /**

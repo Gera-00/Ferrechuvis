@@ -8,7 +8,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -74,6 +77,11 @@ public class PanelProductos{
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        });
+
+        // Evento Enter en campo buscador
+        buscador.addActionListener(e->{
+            btnBuscar.doClick();
         });
 
         panelBuscador.add(buscador);
@@ -196,27 +204,45 @@ public class PanelProductos{
     }
 
 
-    public void buscar()throws Exception{
+    public void buscar() throws Exception {
         String texto = buscador.getText().trim();
         List<Productos> resultados;
-        try {
-            if (texto.isEmpty()) {
-                resultados = cp.getAll();
-            } else {
-                resultados = cp.getByName(texto);
-            }
-            JPanel panelProductos = crearPanelProductos(resultados);
-            JScrollPane scrollPane = new JScrollPane(panelProductos);
-            scrollPane.setBorder(null);
-            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-            panelPrincipal.remove(1); // Elimina el panel anterior (índice 1)
-            panelPrincipal.add(scrollPane, BorderLayout.CENTER);
-            panelPrincipal.revalidate();
-            panelPrincipal.repaint();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (texto.isEmpty()) {
+            resultados = cp.getAll();
+        } else {
+            // Usamos un Set para evitar duplicados
+            Set<Productos> resultadoSet = new HashSet<>();
+
+            // Buscar por nombre
+            resultadoSet.addAll(cp.getByName(texto));
+
+            // Buscar por código
+            resultadoSet.addAll(cp.getByCodigo(texto));
+
+            // Si es numérico, buscar por ID
+            try {
+                int id = Integer.parseInt(texto);
+                Productos prod = cp.getById(id);
+                if (prod != null) {
+                    resultadoSet.add(prod);
+                }
+            } catch (NumberFormatException ex) {
+                // No es un número, ignorar búsqueda por ID
+            }
+
+            resultados = new ArrayList<>(resultadoSet);
         }
+
+        JPanel panelProductos = crearPanelProductos(resultados);
+        JScrollPane scrollPane = new JScrollPane(panelProductos);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        
+        panelPrincipal.remove(1); // Elimina el panel anterior (índice 1)
+        panelPrincipal.add(scrollPane, BorderLayout.CENTER);
+        panelPrincipal.revalidate();
+        panelPrincipal.repaint();
     }
     
     protected GridBagConstraints crearRestricciones(int x, int y, int width, int height) {

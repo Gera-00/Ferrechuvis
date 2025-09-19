@@ -7,7 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
-import java.security.Principal;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,7 +30,7 @@ public class Login extends Pantalla{
     private JButton btnIngresar;
 
     public Login(){
-        super("Inicio de Sesión - Ferrechuvis", 600, 500);
+        super("Inicio de Sesión - Ferrechuvis", 600, 500, false);
     }
 
     @Override
@@ -52,22 +51,28 @@ public class Login extends Pantalla{
         //Configuracion de Componentes
         lblTitulo = new JLabel("Ferrechuvis", SwingConstants.CENTER);
             lblTitulo.setForeground(Color.WHITE);
-            lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+            lblTitulo.setFont(new Font("Arial", Font.BOLD, 36));
 
         lblUsuario = new JLabel("Usuario");
             lblUsuario.setForeground(Color.WHITE);
-        txtUsuario = new JTextField(15);
-
-        lblPassword = new JLabel("Contraseña");
+            lblUsuario.setFont(new Font("Arial", Font.BOLD,18));
+            txtUsuario = new JTextField(15);
+            txtUsuario.setFont(new Font("Arial", Font.BOLD,18));
+            txtUsuario.setHorizontalAlignment(JTextField.CENTER);
+            
+            lblPassword = new JLabel("Contraseña");
             lblPassword.setForeground(Color.WHITE);
+            lblPassword.setFont(new Font("Arial", Font.BOLD,18));
         txtPasswordField = new JPasswordField(15);
+            txtPasswordField.setFont(new Font("Arial", Font.BOLD,18));
+            txtPasswordField.setHorizontalAlignment(JTextField.CENTER);
 
         //Configuración de Botón
         btnIngresar = new JButton("Iniciar Sesión");
             btnIngresar.setBackground(new Color(0x303337));
             //btnIngresar.setBackground(new Color(0x353535));
             btnIngresar.setForeground(Color.WHITE);
-            btnIngresar.setFont(new Font("Arial", Font.BOLD, 12));
+            btnIngresar.setFont(new Font("Arial", Font.BOLD, 18));
             btnIngresar.setFocusPainted(false);
             btnIngresar.setBorderPainted(false);
             btnIngresar.setContentAreaFilled(true);
@@ -106,6 +111,15 @@ public class Login extends Pantalla{
                 ex.printStackTrace();
                 javax.swing.JOptionPane.showMessageDialog(null, "Ocurrió un error al intentar iniciar sesión.");
             }
+        });
+
+        // Evento Enter en campo usuario
+        txtUsuario.addActionListener(e->{
+            btnIngresar.doClick();
+        });
+        // Evento Enter en campo contraseña
+        txtPasswordField.addActionListener(e->{
+            btnIngresar.doClick();
         });
     }
 
