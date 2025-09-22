@@ -1,11 +1,11 @@
+org\upemor\ferrechuvis\model\entity\Productos_Proveedores.class
 org\upemor\ferrechuvis\model\entity\Pedidos.class
 org\upemor\ferrechuvis\model\entity\Proveedores.class
-org\upemor\ferrechuvis\model\repository\MiConexion.class
-org\upemor\ferrechuvis\model\repository\Repository.class
 org\upemor\ferrechuvis\model\entity\Clientes.class
-org\upemor\ferrechuvis\model\entity\Usuarios.class
+org\upemor\ferrechuvis\model\entity\Entity.class
 org\upemor\ferrechuvis\Ferrechuvis.class
 org\upemor\ferrechuvis\model\entity\Productos.class
 org\upemor\ferrechuvis\model\entity\Detalles_Pedidos.class
-org\upemor\ferrechuvis\model\entity\Entity.class
-org\upemor\ferrechuvis\model\entity\Productos_Proveedores.class
+org\upemor\ferrechuvis\model\repository\MiConexion.class
+org\upemor\ferrechuvis\model\repository\Repository.class
+org\upemor\ferrechuvis\model\entity\Usuarios.class

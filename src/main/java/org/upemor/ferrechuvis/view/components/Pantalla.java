@@ -38,10 +38,15 @@ public abstract class Pantalla extends JFrame{
         this.setTitle(titulo);
         this.setSize(ancho, alto);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(false);
+        //Diferencias de configuracion entre pantalla modal y no modal
         if (modal) {
             this.setUndecorated(true);
+            //Si es modal al dar click en cerrar solo se cierra la pantalla en lugar de detener la ejecución
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }else{
+            //En caso de ser pantalla Principal se detiene la ejecución al dar click en cerrar
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
     }
     

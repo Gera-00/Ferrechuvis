@@ -18,22 +18,21 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class FormularioAgregar extends Pantalla{
-    
     private JLabel lblNombre, lblTelefono, lblDireccion, lblEmail;
     private JTextField txtNombre, txtTelefono, txtEmail;
     private JTextArea txtDireccion;
     private JButton btnAgregar, btnCancelar;
     private ControllerProveedores cp;
+    private PanelProveedores panelProveedores;
 
-    public FormularioAgregar(){
-        super("Agregar Administrador - Ferrechuvis", 500, 400,true);
+    public FormularioAgregar(PanelProveedores panelProveedores){
+        super("Agregar Administrador - Ferrechuvis", 450, 400,true);
+        this.panelProveedores = panelProveedores;
         setLocationRelativeTo(null); // Centrar ventana
-        // setModal(true); // Hacer modal si Pantalla extiende JDialog
         try {
             cp = new ControllerProveedores();
         } catch (Exception ex) {
             ex.printStackTrace();
-            // Optionally, show an error dialog or handle the error appropriately
         }
     }
 
@@ -127,6 +126,7 @@ public class FormularioAgregar extends Pantalla{
     protected void setupEventListeners(){
 
 
+
         btnAgregar.addActionListener(e->{
             Proveedores proveedor = new Proveedores();
             proveedor.setNombre(txtNombre.getText());
@@ -138,6 +138,9 @@ public class FormularioAgregar extends Pantalla{
                 boolean resp = cp.guardar(proveedor);
                 if (resp) {
                     JOptionPane.showMessageDialog(this, "Proveedor guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    if (panelProveedores != null) {
+                        panelProveedores.actualizarTabla(cp.getAll());
+                    }
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "No se pudo guardar el proveedor.", "Error", JOptionPane.ERROR_MESSAGE);

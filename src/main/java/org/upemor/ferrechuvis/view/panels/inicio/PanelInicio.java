@@ -13,8 +13,6 @@ import java.awt.GridLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.upemor.ferrechuvis.controller.ControllerPedidos;
 import org.upemor.ferrechuvis.controller.ControllerProductos;

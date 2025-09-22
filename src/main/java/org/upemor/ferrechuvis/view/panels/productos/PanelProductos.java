@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -30,25 +31,62 @@ import org.upemor.ferrechuvis.view.components.ImagenUtils;
 
 public class PanelProductos{
 
+    private int opcPanel = 1;
     private ControllerProductos cp;
     private List<Productos> data;
     private JTextField buscador;
     private JPanel panelPrincipal;
+    private JPanel cards;
+    private final String CARD_PRODUCTOS = "productos";
+    private final String CARD_CRUD = "crud";
 
-    public JPanel crearPanel()throws Exception{
+    // Referencias para actualizar búsqueda
+    private JPanel panelProductos;
+    private JScrollPane scrollPaneProductos;
+    private JPanel productosGrid;
+
+    public JPanel crearPanel() throws Exception {
         cp = new ControllerProductos();
-        panelPrincipal = new JPanel(new BorderLayout());
 
+        cards = new JPanel(new java.awt.CardLayout());
+
+        // Panel productos
+        panelProductos = new JPanel(new BorderLayout());
         JPanel header = crearHeader();
-        JPanel panelProductos = crearPanelProductos(cp.getAll());
+        productosGrid = crearPanelProductos(cp.getAll());
+        scrollPaneProductos = new JScrollPane(productosGrid);
+        scrollPaneProductos.setBorder(null);
+        scrollPaneProductos.getVerticalScrollBar().setUnitIncrement(16);
+        panelProductos.add(header, BorderLayout.NORTH);
+        panelProductos.add(scrollPaneProductos, BorderLayout.CENTER);
 
-        JScrollPane scrollPane = new JScrollPane(panelProductos);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        // Panel CRUD
+        CrudProductos crudPanel = new CrudProductos();
+        crudPanel.setOnRegresar(() -> {
+            opcPanel = 1;
+            mostrarPanel(opcPanel);
+        });
+        JPanel panelCrud = crudPanel.crearPanel();
 
-        panelPrincipal.add(header, BorderLayout.NORTH);
-        panelPrincipal.add(scrollPane, BorderLayout.CENTER);
+        cards.add(panelProductos, CARD_PRODUCTOS);
+        cards.add(panelCrud, CARD_CRUD);
+
+        panelPrincipal = new JPanel(new BorderLayout());
+        panelPrincipal.add(cards, BorderLayout.CENTER);
+
+        mostrarPanel(opcPanel);
         return panelPrincipal;
+    }
+
+    private void mostrarPanel(int opcion) {
+        java.awt.CardLayout cl = (java.awt.CardLayout) cards.getLayout();
+        if (opcion == 1) {
+            cl.show(cards, CARD_PRODUCTOS);
+        } else {
+            cl.show(cards, CARD_CRUD);
+        }
+        panelPrincipal.revalidate();
+        panelPrincipal.repaint();
     }
 
     private JPanel crearHeader(){
@@ -87,7 +125,29 @@ public class PanelProductos{
         panelBuscador.add(buscador);
         panelBuscador.add(btnBuscar);
 
+        // Botón de acceso directo al CRUD de productos (estilo moderno con ícono)
+        JButton btnCrud = new JButton();
+        btnCrud.setPreferredSize(new Dimension(40, 40));
+        btnCrud.setBackground(Color.WHITE);
+        btnCrud.setBorderPainted(false);
+        btnCrud.setFocusPainted(false);
+        btnCrud.setContentAreaFilled(true);
+        btnCrud.setToolTipText("Administrar productos");
+        btnCrud.setCursor(new Cursor(java.awt.Cursor.HAND_CURSOR));
+        // Usa tu método utilitario para poner el ícono (ajusta la ruta si es necesario)
+        ImagenUtils.configurarButtonConImagen(btnCrud, "src/main/java/org/upemor/ferrechuvis/resources/icons/editar.png", 30, 30);
+        
+        btnCrud.addActionListener(e -> {
+            opcPanel = 2;
+            mostrarPanel(opcPanel);
+        });
+
+        JPanel panelDerecha = new JPanel();
+        panelDerecha.setBackground(Color.WHITE);
+        panelDerecha.add(btnCrud);
+
         header.add(panelBuscador, BorderLayout.CENTER);
+        header.add(panelDerecha, BorderLayout.EAST);
         return header;
     }
 
@@ -107,11 +167,7 @@ public class PanelProductos{
             gbc.weightx = 1.0;
             gbc.weighty = 1.0;
 
-            JPanel tarjeta = crearTarjetaProductos(
-                obj.getNombre(),
-                "$" + String.format("%.2f", obj.getPrecio()),
-                String.valueOf(obj.getStock()), obj.getLink_imagen()
-            );
+            JPanel tarjeta = crearTarjetaProductos(obj);
 
             productos.add(tarjeta, gbc);
         }
@@ -119,7 +175,7 @@ public class PanelProductos{
         return productos;
     }
 
-    private JPanel crearTarjetaProductos(String nombre, String precio, String stock, String rutaImg){
+    private JPanel crearTarjetaProductos(Productos producto){
         JPanel tarjeta = new JPanel(new BorderLayout());
         tarjeta.setBackground(Color.WHITE);
         tarjeta.setBorder(BorderFactory.createCompoundBorder(
@@ -133,10 +189,16 @@ public class PanelProductos{
         tarjeta.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
-                System.out.println("Producto clickeado: " + nombre);
-                // Aquí se puede abrir ventana de detalles del producto
+                // Abrir modal de detalle de producto
+                java.awt.Component comp = tarjeta;
+                while (comp != null && !(comp instanceof javax.swing.JFrame)) {
+                    comp = comp.getParent();
+                }
+                java.awt.Frame parent = comp instanceof java.awt.Frame ? (java.awt.Frame) comp : null;
+                DetalleProducto detalle = new DetalleProducto(parent, producto);
+                detalle.setVisible(true);
             }
-            
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 tarjeta.setBackground(new Color(248, 249, 250));
@@ -145,7 +207,7 @@ public class PanelProductos{
                     BorderFactory.createEmptyBorder(15, 15, 15, 15)
                 ));
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 tarjeta.setBackground(Color.WHITE);
@@ -162,7 +224,7 @@ public class PanelProductos{
         panelImagen.setPreferredSize(new Dimension(160, 80));
         
         JLabel lblImagen = new JLabel();
-        ImagenUtils.configurarLabelConImagen(lblImagen, rutaImg, 60, 60);
+        ImagenUtils.configurarLabelConImagen(lblImagen, producto.getLink_imagen(), 60, 60);
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
         panelImagen.add(lblImagen);
 
@@ -171,16 +233,16 @@ public class PanelProductos{
         panelInfo.setBackground(Color.WHITE);
         GridBagConstraints gbcInfo = new GridBagConstraints();
         
-        JLabel lblNombre = new JLabel(nombre);
+        JLabel lblNombre = new JLabel(producto.getNombre());
         lblNombre.setFont(new Font("Arial", Font.BOLD, 14));
         lblNombre.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel lblPrecio = new JLabel(precio);
+        JLabel lblPrecio = new JLabel(String.valueOf(producto.getPrecio()));
         lblPrecio.setFont(new Font("Arial", Font.BOLD, 16));
         lblPrecio.setForeground(new Color(0xFF3F0F));
         lblPrecio.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel lblStock = new JLabel("Stock: " + stock);
+        JLabel lblStock = new JLabel("Stock: " + producto.getStock());
         lblStock.setFont(new Font("Arial", Font.PLAIN, 12));
         lblStock.setForeground(new Color(100, 100, 100));
         lblStock.setHorizontalAlignment(SwingConstants.CENTER);
@@ -203,7 +265,14 @@ public class PanelProductos{
         return tarjeta;
     }
 
-
+    /**
+     * El metodo buscar se encarga de hacer la busqueda por diferentes conceptos,
+     * es decir, hace la busqueda segun ciertas condiciones con metodos como
+     * Buscar por nombre, id, codigo, y al final los resultados se pasan a un HashSet
+     * el cual nos permite filtrar las busquedas y que no haya elementos duplicados que se
+     * muestren
+     * @throws Exception
+     */
     public void buscar() throws Exception {
         String texto = buscador.getText().trim();
         List<Productos> resultados;
@@ -234,15 +303,12 @@ public class PanelProductos{
             resultados = new ArrayList<>(resultadoSet);
         }
 
-        JPanel panelProductos = crearPanelProductos(resultados);
-        JScrollPane scrollPane = new JScrollPane(panelProductos);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        
-        panelPrincipal.remove(1); // Elimina el panel anterior (índice 1)
-        panelPrincipal.add(scrollPane, BorderLayout.CENTER);
-        panelPrincipal.revalidate();
-        panelPrincipal.repaint();
+        // Actualizar el grid de productos dentro del panel y scroll existentes
+        JPanel nuevoGrid = crearPanelProductos(resultados);
+        scrollPaneProductos.setViewportView(nuevoGrid);
+        productosGrid = nuevoGrid;
+        scrollPaneProductos.revalidate();
+        scrollPaneProductos.repaint();
     }
     
     protected GridBagConstraints crearRestricciones(int x, int y, int width, int height) {

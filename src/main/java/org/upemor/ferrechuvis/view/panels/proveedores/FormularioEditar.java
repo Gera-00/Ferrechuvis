@@ -22,23 +22,23 @@ public class FormularioEditar extends Pantalla{
     private JTextField txtNombre, txtTelefono, txtEmail;
     private JTextArea txtDireccion;
     private JButton btnAgregar, btnCancelar;
-
     private ControllerProveedores cp;
     private Proveedores proveedor;
+    private PanelProveedores panelProveedores;
 
-    public FormularioEditar(Proveedores proveedor){
-        super(); // Llama al constructor vacío
+    public FormularioEditar(Proveedores proveedor, PanelProveedores panelProveedores){
+        super();
         this.proveedor = proveedor;
+        this.panelProveedores = panelProveedores;
         try {
             cp = new ControllerProveedores();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        initBaseComponents("Editar Proveedor - Ferrechuvis", 500, 400, true);
+        initBaseComponents("Editar Proveedor - Ferrechuvis", 450, 400, true);
         initSpecificComponents();
         setupEventListeners();
         setLocationRelativeTo(null);
-        // setModal(true); // Hacer modal si Pantalla extiende JDialog
     }
 
     protected LayoutManager tipoPanel(){
@@ -144,10 +144,13 @@ public class FormularioEditar extends Pantalla{
             try {
                 boolean resp = cp.guardar(proveedor);
                 if (resp) {
-                    JOptionPane.showMessageDialog(this, "Proveedor guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Proveedor actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    if (panelProveedores != null) {
+                        panelProveedores.actualizarTabla(cp.getAll());
+                    }
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "No se pudo guardar el proveedor.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "No se pudo actualizar el proveedor.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
