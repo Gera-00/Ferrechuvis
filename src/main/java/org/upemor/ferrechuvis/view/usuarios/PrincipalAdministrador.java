@@ -22,28 +22,33 @@ import org.upemor.ferrechuvis.model.entity.Usuarios;
 import org.upemor.ferrechuvis.view.auth.Login;
 import org.upemor.ferrechuvis.view.components.ImagenUtils;
 import org.upemor.ferrechuvis.view.components.Pantalla;
-import org.upemor.ferrechuvis.view.panels.inicio.PanelInicio;
 import org.upemor.ferrechuvis.view.panels.productos.PanelProductos;
 import org.upemor.ferrechuvis.view.panels.proveedores.PanelProveedores;
+import org.upemor.ferrechuvis.view.panels.ventas.PanelVentas;
 
 public class PrincipalAdministrador extends Pantalla{
     // Componenetes a utilizar
     private JLabel lblLogo, lblTitulo;
     private JButton btnCerrarSesion;
-    private JButton btnInicio, btnProductos, btnProveedores, btnPedidos, btnEmpleados;
+    private JButton btnProductos, btnVentas, btnProveedores, btnConfiguracion, btnEmpleados;
     JPanel panelCentral;
 
     Usuarios usuario;
 
 
     public PrincipalAdministrador(Usuarios usuario){
-        super("Inicio - Ferrechuvis", 1200, 700,false);
+        super("Ferrechuvis Tlapalería", 1200, 700,false);
         this.usuario = usuario;
         //Inicializamos en Panel de Inicio por defecto
-            PanelInicio pi = new PanelInicio(usuario);
-            JPanel panelInicio = pi.crearPanel();
+        try {
+            PanelProductos pu = new PanelProductos(usuario);
+            JPanel panelInicio = pu.crearPanel();
             navegacionUsuario(1);
             cambiarPanel(panelInicio);
+        } catch (Exception e) {
+            System.out.println("Error al inicializar Panel Inicio");
+        }
+            
     }
 
     @Override
@@ -127,20 +132,20 @@ public class PrincipalAdministrador extends Pantalla{
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.weightx = 1.0;
 
-            btnInicio = crearBoton("Inicio",true);
-            btnProductos = crearBoton("Productos",false);
-            btnPedidos = crearBoton("Ventas", false);
+            btnProductos = crearBoton("Productos",true);
+            btnVentas = crearBoton("Ventas",false);
             btnProveedores = crearBoton("Proveedores", false);
+            btnConfiguracion = crearBoton("Configuración", false);
             btnEmpleados = crearBoton("Empleados", false);
 
             gbc.gridy = 0;
-            panelUsuario.add(btnInicio, gbc);
-            gbc.gridy = 1;
             panelUsuario.add(btnProductos, gbc);
+            gbc.gridy = 1;
+            panelUsuario.add(btnVentas, gbc);
             gbc.gridy = 2;
-            panelUsuario.add(btnPedidos, gbc);
-            gbc.gridy = 3;
             panelUsuario.add(btnProveedores, gbc);
+            gbc.gridy = 3;
+            panelUsuario.add(btnConfiguracion, gbc);
             /*ESTO AGREGAR EN POSTERIOR VERSION */
             gbc.gridy = 4;
             //panelUsuario.add(btnEmpleados, gbc);
@@ -208,27 +213,33 @@ public class PrincipalAdministrador extends Pantalla{
             return boton.getBackground().equals(colorSeleccionado);
         }
 
+     /**
+      * Configuración de Botones, incluyendo el despliegue
+      * de paneles
+      */ 
     protected void setupEventListeners(){
-        btnInicio.addActionListener(e->{
-            PanelInicio pi = new PanelInicio(usuario);
-            JPanel panelInicio = pi.crearPanel();
-            navegacionUsuario(1);
-            cambiarPanel(panelInicio);
+        btnProductos.addActionListener(e->{
+            try {
+                PanelProductos pa = new PanelProductos(usuario);
+                JPanel panelInicio = pa.crearPanel();
+                navegacionUsuario(1);
+                cambiarPanel(panelInicio);    
+            } catch (Exception er) {
+                System.out.println("Error al cargar Panel de Inicio-Productos");
+            }
+            
         });
         
-        btnProductos.addActionListener(e->{
-            PanelProductos pp = new PanelProductos();
+        btnVentas.addActionListener(e->{
             try {
-                JPanel panelProductos = pp.crearPanel();
+                PanelVentas pv = new PanelVentas();
+                JPanel panelVentas = pv.crearPanel();
                 navegacionUsuario(2);
-                cambiarPanel(panelProductos);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                cambiarPanel(panelVentas);
+            } catch (Exception er) {
+                er.printStackTrace();
                 // Optionally, show an error dialog to the user
             }
-        });
-        btnPedidos.addActionListener(e->{
-            navegacionUsuario(3);
         });
         btnProveedores.addActionListener(e->{
             PanelProveedores pp = new PanelProveedores();
@@ -241,7 +252,13 @@ public class PrincipalAdministrador extends Pantalla{
                 // Optionally, show an error dialog to the user
             }
         });
+
+        btnConfiguracion.addActionListener(e->{
+            navegacionUsuario(3);
+        });
+
         btnEmpleados.addActionListener(e->{navegacionUsuario(5);});
+        
         btnCerrarSesion.addActionListener(e->{
             int opcion = javax.swing.JOptionPane.showConfirmDialog(
                 this,
@@ -266,7 +283,7 @@ public class PrincipalAdministrador extends Pantalla{
 
     private void navegacionUsuario(int opc){
         // Resetear todos los botones a color normal primero
-        JButton[] botones = {btnInicio, btnProductos, btnPedidos, btnProveedores, btnEmpleados};
+        JButton[] botones = {btnProductos, btnVentas, btnConfiguracion, btnProveedores, btnEmpleados};
         for (JButton boton : botones) {
             boton.setBackground(new Color(0x353535));
         }
@@ -274,13 +291,13 @@ public class PrincipalAdministrador extends Pantalla{
         // Seleccionar el botón correspondiente
         switch (opc) {
             case 1:
-                btnInicio.setBackground(new Color(0xFF3F0F));
-                break;
-            case 2:
                 btnProductos.setBackground(new Color(0xFF3F0F));
                 break;
+            case 2:
+                btnVentas.setBackground(new Color(0xFF3F0F));
+                break;
             case 3:
-                btnPedidos.setBackground(new Color(0xFF3F0F));
+                btnConfiguracion.setBackground(new Color(0xFF3F0F));
                 break;
             case 4:
                 btnProveedores.setBackground(new Color(0xFF3F0F));
