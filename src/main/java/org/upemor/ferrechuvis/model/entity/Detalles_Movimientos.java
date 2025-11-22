@@ -6,15 +6,18 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class Detalles_Pedidos extends Entity{
+public class Detalles_Movimientos extends Entity{
 
-    private long id_pedido;
     private long id_producto;
+    private long id_movimiento;
     private int cantidad;
+    private int stock_anterior;
+    private int stock_actual;
+    private String observaciones;
     private double precio_unitario;
 
     @Override
     public String toString(){
-        return id_pedido+" "+id_producto;
+        return id_movimiento+" "+id_producto;
     }
 }

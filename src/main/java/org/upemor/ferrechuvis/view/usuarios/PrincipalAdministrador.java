@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -260,14 +261,14 @@ public class PrincipalAdministrador extends Pantalla{
         btnEmpleados.addActionListener(e->{navegacionUsuario(5);});
         
         btnCerrarSesion.addActionListener(e->{
-            int opcion = javax.swing.JOptionPane.showConfirmDialog(
+            int opcion = JOptionPane.showConfirmDialog(
                 this,
                 "¿Seguro que desea cerrar sesión?",
                 "Confirmar cierre de sesión",
-                javax.swing.JOptionPane.YES_NO_OPTION,
-                javax.swing.JOptionPane.QUESTION_MESSAGE
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
             );
-            if (opcion == javax.swing.JOptionPane.YES_OPTION) {
+            if (opcion == JOptionPane.YES_OPTION) {
                 dispose();
                 new Login().setVisible(true);
             }

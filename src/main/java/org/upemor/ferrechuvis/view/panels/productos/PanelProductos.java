@@ -168,7 +168,7 @@ public class PanelProductos {
                 
                 panelSuperior.add(txtBuscador);
                 panelSuperior.add(btnBuscar);
-                panelSuperior.add(comboWrapper);
+                //panelSuperior.add(comboWrapper);
                 /*--------------------PANEL INFERIOR-------------------------- */
                 JPanel panelInferior = new JPanel(new BorderLayout());
                 panelInferior.setBackground(Color.WHITE);

@@ -8,12 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class Pedidos extends Entity{
-    
+public class Movimientos extends Entity{
+    private String codigo;
     private long id_cliente;
-    private LocalDate fecha;
+    private long id_proveedor;
+    private long id_tipo_movimiento;
+    private String motivo;
     private Double total;
-    private String estado;
+    private LocalDate fecha;
 
     @Override
     public String toString(){
