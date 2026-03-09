@@ -31,6 +31,7 @@ public class Login extends Pantalla{
 
     public Login(){
         super("Inicio de Sesión - Ferrechuvis", 600, 500, false);
+        inicializar();
     }
 
     @Override

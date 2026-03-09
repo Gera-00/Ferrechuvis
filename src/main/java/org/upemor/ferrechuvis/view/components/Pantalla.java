@@ -23,12 +23,15 @@ public abstract class Pantalla extends JFrame{
     public Pantalla(String titulo, int ancho, int alto, boolean modal) {
         //panelPrincipal = new JPanel();
         initBaseComponents(titulo,ancho,alto,modal);
-        initSpecificComponents();
-        setupEventListeners();
     }
 
     public Pantalla(){
 
+    }
+
+    protected void inicializar(){
+        initSpecificComponents();
+        setupEventListeners();
     }
     
     protected void initBaseComponents(String titulo, int ancho, int alto, boolean modal) {

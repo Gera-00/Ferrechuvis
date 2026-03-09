@@ -15,9 +15,12 @@ public class Ferrechuvis {
         */
         Usuarios user = new Usuarios();
         user.setNombre("Jose Luis");
-        
-        PrincipalAdministrador pantallaPrueba = new PrincipalAdministrador(user);
-        pantallaPrueba.mostrar();
+        try {
+            PrincipalAdministrador pantallaPrueba = new PrincipalAdministrador(user);
+            pantallaPrueba.mostrar();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         
     }
 }

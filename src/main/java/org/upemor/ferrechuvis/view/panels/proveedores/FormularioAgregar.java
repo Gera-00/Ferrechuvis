@@ -27,6 +27,7 @@ public class FormularioAgregar extends Pantalla{
 
     public FormularioAgregar(PanelProveedores panelProveedores){
         super("Agregar Administrador - Ferrechuvis", 450, 400,true);
+        inicializar();
         this.panelProveedores = panelProveedores;
         setLocationRelativeTo(null); // Centrar ventana
         try {

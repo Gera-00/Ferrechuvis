@@ -1,6 +1,7 @@
 package org.upemor.ferrechuvis.view.usuarios;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -23,6 +24,7 @@ import org.upemor.ferrechuvis.model.entity.Usuarios;
 import org.upemor.ferrechuvis.view.auth.Login;
 import org.upemor.ferrechuvis.view.components.ImagenUtils;
 import org.upemor.ferrechuvis.view.components.Pantalla;
+import org.upemor.ferrechuvis.view.panels.configuraciones.PanelConfiguracion;
 import org.upemor.ferrechuvis.view.panels.productos.PanelProductos;
 import org.upemor.ferrechuvis.view.panels.proveedores.PanelProveedores;
 import org.upemor.ferrechuvis.view.panels.ventas.PanelVentas;
@@ -34,22 +36,20 @@ public class PrincipalAdministrador extends Pantalla{
     private JButton btnProductos, btnVentas, btnProveedores, btnConfiguracion, btnEmpleados;
     JPanel panelCentral;
 
+    CardLayout cardLayout;
+
+    private static final String PANEL_PRODUCTOS = "productos";
+    private static final String PANEL_VENTAS = "ventas";
+    private static final String PANEL_PROVEEDORES = "proveedores";
+    private static final String PANEL_CONFIGURACION = "configuracion";
+    private static final String PANEL_EMPLEADOS = "empleados";
+
     Usuarios usuario;
 
-
-    public PrincipalAdministrador(Usuarios usuario){
+    public PrincipalAdministrador(Usuarios usuario)throws Exception{
         super("Ferrechuvis Tlapalería", 1200, 700,false);
         this.usuario = usuario;
-        //Inicializamos en Panel de Inicio por defecto
-        try {
-            PanelProductos pu = new PanelProductos(usuario);
-            JPanel panelInicio = pu.crearPanel();
-            navegacionUsuario(1);
-            cambiarPanel(panelInicio);
-        } catch (Exception e) {
-            System.out.println("Error al inicializar Panel Inicio");
-        }
-            
+        inicializar();
     }
 
     @Override
@@ -61,13 +61,35 @@ public class PrincipalAdministrador extends Pantalla{
         JPanel header = crearHeader();
         JPanel panelUsuario = crearPanelUsuario();
 
-        panelCentral = new JPanel(new BorderLayout());
+        cardLayout = new CardLayout();
+        panelCentral = new JPanel(cardLayout);
+        try {
+            inicializarPaneles();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        
         panelPrincipal.add(header, BorderLayout.NORTH);
         panelPrincipal.add(panelUsuario, BorderLayout.WEST);
         panelPrincipal.add(panelCentral, BorderLayout.CENTER);
     }
+
+        /**
+         * Metodo para Inicializar los paneles y
+         * cargar el CardLayout
+         */
+        private void inicializarPaneles()throws Exception{
+
+            PanelProductos pp = new PanelProductos(usuario);
+            PanelVentas pv = new PanelVentas();
+            PanelProveedores ppr = new PanelProveedores();
+            PanelConfiguracion pc = new PanelConfiguracion();
+
+            panelCentral.add(pp.crearPanel(), PANEL_PRODUCTOS);
+            panelCentral.add(pv.crearPanel(), PANEL_VENTAS);
+            panelCentral.add(ppr.crearPanel(), PANEL_PROVEEDORES);
+            panelCentral.add(pc.crearPanel(), PANEL_CONFIGURACION);
+        }
 
     
     //METODOS PARA CONSTRUIR TODOS LOS PANELES Y ELEMENTOS QUE LLEVAN EL PANEL PRINCIPAL
@@ -221,41 +243,43 @@ public class PrincipalAdministrador extends Pantalla{
     protected void setupEventListeners(){
         btnProductos.addActionListener(e->{
             try {
-                PanelProductos pa = new PanelProductos(usuario);
-                JPanel panelInicio = pa.crearPanel();
                 navegacionUsuario(1);
-                cambiarPanel(panelInicio);    
+                cambiarPanel(PANEL_PRODUCTOS);
             } catch (Exception er) {
+                er.printStackTrace();
                 System.out.println("Error al cargar Panel de Inicio-Productos");
             }
             
         });
-        
+
         btnVentas.addActionListener(e->{
             try {
-                PanelVentas pv = new PanelVentas();
-                JPanel panelVentas = pv.crearPanel();
                 navegacionUsuario(2);
-                cambiarPanel(panelVentas);
+                cambiarPanel(PANEL_VENTAS);
             } catch (Exception er) {
                 er.printStackTrace();
-                // Optionally, show an error dialog to the user
+                System.out.println("Error al cargar Panel de Ventas");
             }
         });
+
         btnProveedores.addActionListener(e->{
-            PanelProveedores pp = new PanelProveedores();
             try {
-                JPanel panelProveedores = pp.crearPanel();
                 navegacionUsuario(4);
-                cambiarPanel(panelProveedores);
+                cambiarPanel(PANEL_PROVEEDORES);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                // Optionally, show an error dialog to the user
+                System.out.println("Error al cargar Panel de Proveedores");
             }
         });
 
         btnConfiguracion.addActionListener(e->{
-            navegacionUsuario(3);
+            try {
+                navegacionUsuario(3);
+                cambiarPanel(PANEL_CONFIGURACION);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Error al cargar Panel de Configuración");
+            }
         });
 
         btnEmpleados.addActionListener(e->{navegacionUsuario(5);});
@@ -275,11 +299,8 @@ public class PrincipalAdministrador extends Pantalla{
         });
     }
 
-    private void cambiarPanel(JPanel nuevoPanel){
-        panelCentral.removeAll();
-        panelCentral.add(nuevoPanel, BorderLayout.CENTER);
-        panelCentral.revalidate();
-        panelCentral.repaint();
+    private void cambiarPanel(String nombrePanel){
+        cardLayout.show(panelCentral, nombrePanel);
     }
 
     private void navegacionUsuario(int opc){
